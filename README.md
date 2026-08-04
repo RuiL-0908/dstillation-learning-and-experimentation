@@ -87,6 +87,9 @@ $$Loss_{total} = Loss_{KL}$$
 | **General OPD** | On-Policy | 8,000 | 0.2022 |
 | **Curriculum OPD** | On-Policy | 5,044 (522+1022+1500+2000) | 0.2077 |
 
+
+![kl_divergence_comparison](\images\kl_divergence_comparison.png)
+
 ### 3. 结果分析
 
 #### 1：Off-Policy
