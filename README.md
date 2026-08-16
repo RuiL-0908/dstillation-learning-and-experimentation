@@ -65,7 +65,9 @@ $$H_t = -\sum_{v \in \mathcal{V}} p_\theta(v \mid x, y_{<t}) \log p_\theta(v \mi
 
 对全局训练步数 $t$ 预设的绝对数值进行线性衰减，前期容错高，后期收紧：
 
-$$E_{max}(t) = E_{start} - (E_{start} - E_{end}) \cdot \frac{t}{T_{total}}$$
+$$
+E_{max}(t) = E_{start} - (E_{start} - E_{end}) \cdot \frac{t}{T_{total}}
+$$
 
 #### 方案 B：相对阈值 (Relative Threshold - Z-score)
 
