@@ -55,7 +55,7 @@ $$Loss_{total} = Loss_{KL}$$
 
 系统在训练中实时监控学生模型自回归生成每一步的预测概率分布，计算策略熵（Policy Entropy）：
 
-$$H_t = -\sum_{v \in \mathcal{V}} p_\theta(v \mid x, y_{<t}) \log p_\theta(v \mid x, y_{<t})$$
+$$H_t = -\sum_{v \in \mathcal{V}} p_\theta(v \mid x, y_{\lt t}) \log p_\theta(v \mid x, y_{\lt t})$$
 
 如果连续 $N$ 个 Token 的熵值超出动态容忍阈值 $E_{max}$，表明模型开始产生幻觉或逻辑崩溃。通过一维卷积滑窗机制定位崩溃起点，利用后置掩码（将对应的 labels 改为 -100）截断后续无效轨迹的梯度回传。
 
@@ -65,9 +65,7 @@ $$H_t = -\sum_{v \in \mathcal{V}} p_\theta(v \mid x, y_{<t}) \log p_\theta(v \mi
 
 对全局训练步数 $t$ 预设的绝对数值进行线性衰减，前期容错高，后期收紧：
 
-$$
-E_{max}(t) = E_{start} - (E_{start} - E_{end}) \cdot \frac{t}{T_{total}}
-$$
+$$E_{max}(t) = E_{start} - (E_{start} - E_{end}) \cdot \frac{t}{T_{total}}$$
 
 #### 方案 B：相对阈值 (Relative Threshold - Z-score)
 
