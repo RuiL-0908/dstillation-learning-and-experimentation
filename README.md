@@ -52,6 +52,7 @@ $$Loss_{total} = Loss_{KL}$$
 针对长文本生成中常见的误差累积（Compounding Errors）问题，引入了基于学生模型实时状态的**自适应截断机制**。
 
 ### 1. 核心思想
+
 系统在训练中实时监控学生模型自回归生成每一步的预测概率分布，计算策略熵（Policy Entropy）：
 
 $$H_t = -\sum_{v \in \mathcal{V}} p_\theta(v \mid x, y_{<t}) \log p_\theta(v \mid x, y_{<t})$$
@@ -69,6 +70,7 @@ $$E_{max}(t) = E_{start} - (E_{start} - E_{end}) \cdot \frac{t}{T_{total}}$$
 #### 方案 B：相对阈值 (Relative Threshold - Z-score)
 
 相对阈值方案会计算当前 Batch 内部所有生成 Token 策略熵集合 $\mathcal{H}$ 的均值与标准差，进行动态异常检测：
+
 $$\mu_{\mathcal{H}} = \frac{1}{N} \sum_{i=1}^{N} H_i$$
 
 $$\sigma_{\mathcal{H}} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (H_i - \mu_{\mathcal{H}})^2}$$
@@ -122,21 +124,25 @@ $$E_{max} = \mu_{\mathcal{H}} + k \cdot \sigma_{\mathcal{H}}$$
 ### 3. 结果分析
 
 #### 1：Off-Policy
+
 Standard KD 在测试集上的 KL 散度（1.2210）远高于未经训练的模型。
 
 **分析**：离线蒸馏的 Teacher Forcing 导致模型未见过自身的预测错误，测试生成时极易进入 Out-of-Distribution 状态并严重偏离教师分布。
 
 #### 2：On-Policy
+
 General OPD 的 KL 散度显著降至 0.2022。
 
 **分析**：模型通过探索自身轨迹接受校准，有效消除了长度捷径问题。
 
 #### 3：绝对阈值
+
 Adaptive OPD (Absolute) 的 KL 散度出现明显退化（0.2660）。
 
 **分析**：由于不同任务固有的信息熵差异极大，硬编码的绝对阈值显得过于严苛，导致模型频繁被截断,无法充分吸收教师的分布知识。
 
 #### 4：相对阈值
+
 Adaptive OPD (Relative) 目前取得了最低的 KL 散度（0.2014），优于静态课程学习与普通在线蒸馏基线。
 
 **分析**：采用基于批次均值和标准差的相对阈值（Z-score检测），系统能够根据当前样本的实际难度动态伸缩容忍度边界，避免对困难知识的“错杀”与梯度饥饿。
