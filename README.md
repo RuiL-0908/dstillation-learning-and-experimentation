@@ -32,6 +32,7 @@
 
 ### 5. KL 散度计算
 提取两者词表的最小交集截断 Logits。调用 `losses.py`，计算目标 Token 上的 **Reverse KL**：
+
 $$D_{KL}(P_{student} || P_{teacher})$$
 
 然后 KL 散度除以有效 token 数量取平均，防止模型利用短序列规避惩罚。
@@ -52,6 +53,7 @@ $$Loss_{total} = Loss_{KL}$$
 
 ### 1. 核心思想
 系统在训练中实时监控学生模型自回归生成每一步的预测概率分布，计算策略熵（Policy Entropy）：
+
 $$H_t = -\sum_{v \in \mathcal{V}} p_\theta(v \mid x, y_{<t}) \log p_\theta(v \mid x, y_{<t})$$
 
 如果连续 $N$ 个 Token 的熵值超出动态容忍阈值 $E_{max}$，表明模型开始产生幻觉或逻辑崩溃。通过一维卷积滑窗机制定位崩溃起点，利用后置掩码（将对应的 labels 改为 -100）截断后续无效轨迹的梯度回传。
